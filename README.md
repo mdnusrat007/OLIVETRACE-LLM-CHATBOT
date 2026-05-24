@@ -63,8 +63,8 @@ Keep Ollama running in this terminal.
 Open a new terminal:
 
 ```bash
-git clone 
-cd <your-repo-folder>
+git clone https://github.com/mdnusrat007/OLIVETRACE-LLM-CHATBOT.git
+cd OLIVETRACE-LLM-CHATBOT
 ```
 
 ---
