@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: olivetrace_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: olivetrace
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/olivetrace --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: olivetrace_backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/olivetrace
+      - PORT=5000
+      - OLLAMA_URL=http://host.docker.internal:11434  # reaches Ollama on your host
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app          # live reload — your code changes reflect instantly
+      - /app/node_modules       # keep container's node_modules separate
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: olivetrace_frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app         # live reload
+      - /app/node_modules
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

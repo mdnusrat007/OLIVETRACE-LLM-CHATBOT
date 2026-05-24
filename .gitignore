@@ -1,0 +1,22 @@
+# ── Root ────────────────────────────────────────
+.env
+node_modules/
+
+# ── Backend ─────────────────────────────────────
+backend/.env
+backend/node_modules/
+
+# ── Frontend ────────────────────────────────────
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
+frontend/node_modules/
+
+# ── Logs ────────────────────────────────────────
+*.log
+npm-debug.log*
+
+# ── OS ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
